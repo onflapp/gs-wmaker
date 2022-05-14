@@ -617,11 +617,46 @@ static void handleMapRequest(XEvent * ev)
 	}
 
 	scr = wScreenForRootWindow(ev->xmaprequest.parent);
+	GNUstepWMAttributes wm_gnustep_attr;
+	GNUstepWMAttributes* wm_gnustep_attr_ptr = &wm_gnustep_attr;
+
+	int hide_new_menu = 0;
+
+	if (PropGetGNUstepWMAttr(window, &wm_gnustep_attr_ptr)) {
+		Window transient_for = 0;
+		XGetTransientForHint(dpy, window, &transient_for);
+
+		if (wm_gnustep_attr_ptr->flags & GSWindowLevelAttr && \
+				transient_for == 0 && \
+				wm_gnustep_attr_ptr->window_level == WMPopUpMenuWindowLevel) {
+
+			if (GNUstep_popup_menu == -1) GNUstep_popup_menu = window;
+
+			wHideGNUstepMenu(scr);
+			XMapWindow(dpy, window);
+			XRaiseWindow(dpy, window);
+			XSync(dpy, False);
+			return;
+		}
+		if (wm_gnustep_attr_ptr->flags & GSWindowLevelAttr && \
+			  (wm_gnustep_attr_ptr->window_level == WMSubmenuWindowLevel || \
+				 wm_gnustep_attr_ptr->window_level == WMMainMenuWindowLevel)) {
+
+			/* this is main menu for active application
+			 * but the pop menu is still showing
+			 */
+
+			if (GNUstep_popup_menu != -1) {
+				hide_new_menu = 1;
+			}
+		}
+	}
 
 	wwin = wManageWindow(scr, window);
-	if (wwin && IS_GNUSTEP_POPUP_MENU(wwin)) {
-		wHideGNUstepMenu(scr);
-		GNUstep_popup_menu = window;
+	if (wwin && hide_new_menu) {
+		XRaiseWindow(dpy, GNUstep_popup_menu);
+		wWindowUnmap(wwin);
+		wwin->flags.is_temp_hidden = 1;
 	}
 
 	/*
