@@ -102,7 +102,7 @@ void WSetGeometryViewShownSize(WGeometryView * gview, unsigned width, unsigned h
 static void paint(WGeometryView * gview)
 {
 	char buffer[64];
-
+/*
 	if (gview->showPosition) {
 		snprintf(buffer, sizeof(buffer), "%+5i , %+5i    ", gview->data.pos.x, gview->data.pos.y);
 	} else {
@@ -115,7 +115,7 @@ static void paint(WGeometryView * gview)
 			  gview->color, gview->bgColor, gview->font,
 			  (W_VIEW_WIDTH(gview->view) - gview->textSize.width) / 2,
 			  (W_VIEW_HEIGHT(gview->view) - gview->textSize.height) / 2, buffer, strlen(buffer));
-
+*/
 	W_DrawRelief(W_VIEW_SCREEN(gview->view), W_VIEW_DRAWABLE(gview->view),
 		     0, 0, W_VIEW_WIDTH(gview->view), W_VIEW_HEIGHT(gview->view), WRSimple);
 }
