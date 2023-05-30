@@ -250,7 +250,7 @@ static void setupGNUstepHints(WWindow *wwin, GNUstepWMAttributes *gs_hints)
 			wwin->client_flags.no_resizebar = 1;
 		} else {
 			wwin->client_flags.no_close_button =
-			    ((gs_hints->window_style & WMClosableWindowMask) ? 0 : 1);
+			    ((gs_hints->window_style & WMClosableWindowMask) ? 1 : 1);
 
 			wwin->client_flags.no_closable = ((gs_hints->window_style & WMClosableWindowMask) ? 0 : 1);
 
